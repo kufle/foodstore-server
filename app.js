@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 //import product router
 const productRouter = require('./app/product/router');
+const categoryRouter = require('/app/category/router');
 var app = express();
 
 // view engine setup
