@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 //import product router
 const productRouter = require('./app/product/router');
-const categoryRouter = require('/app/category/router');
+const categoryRouter = require('./app/category/router');
 var app = express();
 
 // view engine setup
@@ -20,6 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //gunakan product router
 app.use('/api', productRouter);
+app.use('/api', categoryRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
