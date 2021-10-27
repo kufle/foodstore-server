@@ -10,4 +10,4 @@ const tagSchema = Schema({
     }
 });
 
-module.exports = model('tag', tagSchema);
+module.exports = model('Tag', tagSchema);

@@ -17,7 +17,12 @@ const productSchema = Schema({
         type: Number,
         default: 0
     },
-    image_url: String
+    image_url: String,
+    // Relation dengan category
+    category: {
+        type: Schema.Types.ObjectId,
+        ref: 'Category'
+    }
 }, {timestamps: true});
 
 module.exports = model('Product', productSchema);
