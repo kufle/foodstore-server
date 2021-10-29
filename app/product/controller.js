@@ -3,16 +3,35 @@ const path = require('path');
 
 const Product = require('./model');
 const Category = require('../category/model');
+const Tag = require('../tag/model');
 const config = require('../config');
 
 //Request method GET
 async function index(req, res, next){
     try {
-        let { limit = 10 ,skip = 0 } = req.query;
+        let { limit = 10 ,skip = 0, q='', category='', tags=[] } = req.query;
+        let criteria = {};
+        if(q.length){
+            criteria = {
+                ...criteria,
+                name: {$regex: `${q}`, $options: 'i'}
+            }
+        }
+        if(category.length){
+            category = await Category.findOne({name: {$regex: `${category}`, $options: 'i'}});
+            if(category){
+                criteria = {...criteria, category: category._id};
+            }
+        }
+        if(tags.length){
+            tags = await Tag.find({name: {$in: tags}});
+            criteria = {...criteria, tags: {$in: tags.map(tag => tag._id)}};
+        }
         let products = 
             await Product
-                .find()
+                .find(criteria)
                 .populate('category')
+                .populate('tags')
                 .limit(parseInt(limit))
                 .skip(parseInt(skip));
 
@@ -34,6 +53,14 @@ async function store(req, res, next){
                 payload = {...payload, category: category._id};
             }else{
                 delete payload.category;
+            }
+        }
+
+        if(payload.tags && payload.tags.length){
+            let tags = await Tag.find({name: {$in: payload.tags}});
+
+            if(tags.length){
+                payload = {...payload, tags: tags.map( tag => tag._id)};
             }
         }
         if(req.file){
@@ -103,6 +130,17 @@ async function update(req, res, next){
                 delete payload.category;
             }
         }
+
+        if(payload.tags && payload.tags.length){
+            let tags = await Tag.find({
+                name: {$in: payload.tags}
+            });
+
+            if(tags.length){
+                payload = {...payload, tags: tags.map(tag => tag._id)};
+            }
+        }
+        
         if(req.file){
             let tmp_path = req.file.path;
             let originalExt = req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
