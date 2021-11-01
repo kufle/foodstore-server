@@ -5,6 +5,7 @@ const Product = require('./model');
 const Category = require('../category/model');
 const Tag = require('../tag/model');
 const config = require('../config');
+const { policyFor } = require('../policy');
 
 //Request method GET
 async function index(req, res, next){
@@ -27,6 +28,9 @@ async function index(req, res, next){
             tags = await Tag.find({name: {$in: tags}});
             criteria = {...criteria, tags: {$in: tags.map(tag => tag._id)}};
         }
+        
+        let count = await Product.find(criteria).countDocuments();
+
         let products = 
             await Product
                 .find(criteria)
@@ -35,7 +39,7 @@ async function index(req, res, next){
                 .limit(parseInt(limit))
                 .skip(parseInt(skip));
 
-        return res.json(products);
+        return res.json({data: products, count});
     } catch (err) {
         next(err);
     }
@@ -45,6 +49,14 @@ async function index(req, res, next){
 //Request method POST
 async function store(req, res, next){
     try{
+        let policy = policyFor(req.user);
+        if(!policy.can('create', 'Product')){
+            return res.json({
+                error: 1,
+                message: 'You do not have access to create product'
+            });
+        }
+
         let payload = req.body;
         if(payload.category){
             let category = await Category.findOne({name: {$regex: payload.category, $options: 'i'}});
@@ -121,6 +133,15 @@ async function store(req, res, next){
 //Request method PUT
 async function update(req, res, next){
     try{
+        
+        let policy = policyFor(req.user);
+        if(!policy.can('update', 'Product')){
+            return res.json({
+                error: 1,
+                message: 'You do not have access to update product'
+            });
+        }
+
         let payload = req.body;
         if(payload.category){
             let category = await Category.findOne({name: {$regex: payload.category, $options: 'i'}});
@@ -207,6 +228,14 @@ async function update(req, res, next){
 
 async function destroy(req, res, next){
     try {
+        let policy = policyFor(req.user);
+        if(!policy.can('delete', 'Product')){
+            return res.json({
+                error: 1,
+                message: 'You do not have access to delete product'
+            });
+        }
+
         let product = await Product.findOne({_id: req.params.id})
 
         let currentImage = `${config.rootPath}/public/upload/${product.image_url}`;
