@@ -10,25 +10,25 @@ const policies = {
         //membuat order
         can('create', 'Order');
         //membaca order miliknya
-        can('read', 'Order', {_id: user._id});
+        can('read', 'Order', {user_id: user._id});
         //mengupdate dirinya sendiri
         can('update', 'User', {_id: user._id});
         //membaca cart miliknya
-        can('read', 'Cart', {_id: user._id});
+        can('read', 'Cart', {user_id: user._id});
         //mengupdate cart miliknya
-        can('update', 'Cart', {_id: user._id});
+        can('update', 'Cart', {user_id: user._id});
         //melihat daftar delivery address
         can('view', 'DeliveryAddress');
         //membuat delivery address
-        can('create', 'DeliveryAddress', {_id: user._id});
+        can('create', 'DeliveryAddress', {user_id: user._id});
         //membaca delivery address miliknya
-        can('read', 'DeliveryAddress', {_id: user._id});
+        can('read', 'DeliveryAddress', {user_id: user._id});
         //mengupdate delivery address miliknya sendiri
-        can('update', 'DeliveryAddress', {_id: user._id});
+        can('update', 'DeliveryAddress', {user_id: user._id});
         //menghapus delivery address miliknya
-        can('delete', 'DeliveryAddress', {_id: user._id});
+        can('delete', 'DeliveryAddress', {user_id: user._id});
         //membaca invoice miliknya
-        can('read', 'Invoice', {_id: user._id});
+        can('read', 'Invoice', {user_id: user._id});
     },
     admin(user, {can}){
         can('manage', 'all');
