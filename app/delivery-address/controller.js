@@ -16,8 +16,8 @@ async function index(req,res,next){
         const count = await DeliveryAddress.find({user: req.user._id}).countDocuments();
         const deliveryAddress = await DeliveryAddress
                     .find({user: req.user._id})
-                    .limit(limit)
-                    .skip(skip)
+                    .limit(parseInt(limit))
+                    .skip(parseInt(skip))
                     .sort('-createdAt');
         return res.json({data: deliveryAddress, count: count});
     } catch (err) {
