@@ -11,7 +11,7 @@ const userSchema = Schema({
         type: String,
         required: [true, 'Name required'],
         maxlength: [255, 'Name maximum 255 character length'],
-        minglength: [3, 'Name minimum 3 character length']
+        minlength: [3, 'Name minimum 3 character length']
     },
     customer_id: {
         type: Number
@@ -20,7 +20,7 @@ const userSchema = Schema({
         type: String,
         required: [true, 'Email required'],
         maxlength: [255, 'Email maximum 255 character length'],
-        minglength: [3, 'Email minimum 3 character length']
+        minlength: [3, 'Email minimum 3 character length']
     },
     password: {
         type: String,
